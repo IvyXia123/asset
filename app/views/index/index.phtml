@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>资产管理系统</title>
+        <link rel="shortcut icon" type="image/x-icon" href="/imgs/yen-coins.png"/>
+        <link rel="stylesheet" type="text/css" href="/css/base.css"/>
+        <link rel="stylesheet" type="text/css" href="/css/index.css"/>
+        <link rel="stylesheet" type="text/css" href="/css/sh/shCore.css"/>
+        <link rel="stylesheet" type="text/css" href="/css/sh/shCoreDefault.css"/>
+        <link rel="stylesheet" type="text/css" href="/css/sh/shThemeDefault.css"/>
+
+        <link rel="stylesheet" type="text/css" href="/css/flexTab.css"/>
+        <link rel="stylesheet" type="text/css" href="/css/baseTable.css"/>
+        <link rel="stylesheet" type="text/css" href="/css/calendar.css"/>
+        <link rel="stylesheet" type="text/css" href="/css/loading.css"/>
+        <link rel="stylesheet" type="text/css" href="/css/loading.css"/>
+        <style type="text/css">
+            .icon {
+                width: 1em; height: 1em;
+                vertical-align: -0.15em;
+                fill: currentColor;
+                overflow: hidden;
+            }
+            .bottomStatusBar li{
+            	display: inline-block;
+            }
+            .bsb-dataSize{
+            	padding: 0 10px;
+    			color: #FF9800;
+            }
+            .bsb-placeholder{
+            	padding: 0 5px;
+            	color: red;
+            }
+            .bsb-dataType{
+            	color: red;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="sideBox">
+            <div class="navBox">
+                <div class="logoIconBox">
+                    <img src="imgs/logoB.jpg"/>
+                </div>
+                <div class="sysTitle">资产管理系统</div>
+                <div class="userBox">欢迎：<span id="fuser">赵鹏</span></div>
+                <div class="exitBox"><a href="javascript:;" onclick="exit()">退出</a></div>
+                <ul class="navs">
+                    <li>
+                        <a href="javascript:;" data-page = "flexTab">
+                            <svg class="icon flexTab-icon" aria-hidden="true">
+                                <use xlink:href="#icon-maidan"></use>
+                            </svg>
+                            资产售卖进度
+                        </a>
+                    </li>
+                    <li>
+                        <a href="javascript:;" data-page = "basic">
+                            <svg class="icon basic-icon" aria-hidden="true">
+                                <use xlink:href="#icon-jichuxinxi"></use>
+                            </svg>
+                            资产基础信息
+                        </a>
+                    </li>
+                    <li>
+                        <a href="javascript:;" data-page = "makeLoans">
+                            <svg class="icon makeLoan-icon" aria-hidden="true">
+                                <use xlink:href="#icon-bf-icon-statistical"></use>
+                            </svg>
+                            放款统计
+                        </a>
+                    </li>
+                    <li>
+                        <a href="javascript:;" data-page = "laterPeriodCosts">
+                            <svg class="icon laterPeriodCosts-icon" aria-hidden="true">
+                                <use xlink:href="#icon-icon10"></use>
+                            </svg>
+                            资产后期费用
+                        </a>
+                    </li>
+                    <li>
+                        <a href="javascript:;" data-page = "collectData">
+                            <svg class="icon collectData-icon" aria-hidden="true">
+                                <use xlink:href="#icon-h5dibutubiao14"></use>
+                            </svg>
+                            资产募集数据
+                        </a>
+                    </li>
+                    <li>
+                        <a href="javascript:;" data-page = "proBasicInfo">
+                            <svg class="icon proBasicInfo-icon" aria-hidden="true">
+                                <use xlink:href="#icon-chanpin"></use>
+                            </svg>
+                            产品基础信息
+                        </a>
+                    </li>
+                </ul>
+                <div id="formName" style="display:none"></div>
+            </div>
+        </div>
+        <div class="g-container">
+            <section class="g-content"></section>
+        </div>
+        <article class="particular">
+            <section class="Auto particular-content">
+                <div class="particular-tab">
+                    <table border="1" cellspacing="1" cellpadding="1">
+                    </table>
+                </div>
+            </section>
+        </article>
+        <!-- 日期选项 -->
+        <div id="date-query">
+            <form >
+                <section class="u-datails">
+                    <input type="radio" class="query" value="" name="dates" checked/>
+                    <div class="datails date-datails">
+                        <input type="text" placeholder="请输入查询信息"/>
+                        <h6 style="font-size: 12px;color: red;opacity: .5;"><i style="font-size: 16px;vertical-align: middle;">*     </i>此项为模糊搜索</h6>
+                    </div>
+                </section>
+                <hr/>
+                <section class="u-datails">
+                    <input type="radio" class="query" value="" name="dates"/>
+                    <div class="datails">
+                        <input type="text" class="queryDate" placeholder="请输入成立日期" disabled/>
+                    </div>
+                </section>
+                <hr/>
+                <section class="u-datails">
+                    <input type="radio" class="query" value="" name="dates"/>
+                    <div class="datails">
+                        <input type="text" class="queryDate" placeholder="请输入募集开始时间" disabled/>
+                        <input type="text" class="queryDate" placeholder="请输入募集结束时间" disabled/>
+                    </div>
+                </section>
+                <hr/>
+                <section class="u-datails">
+                    <input type="radio" class="query" value="" name="dates"/>
+                    <div class="datails">
+                        <input type="text" class="queryDate" placeholder="请输入售卖开始时间" disabled/>
+                        <input type="text" class="queryDate" placeholder="请输入售卖结束时间" disabled/>
+                        <h6 style="font-size: 12px;color: red;opacity: .5;">售卖时间格式为：YYYY-MM-DD HH</h6>
+                    </div>
+                </section>
+                <input type="button" value="提交" class="submit" style="cursor: pointer;"/>
+            </form>
+        </div>
+        <!-- 数据条数显示  -->
+        <ul id="data-item" class="bottomStatusBar">
+        	<li class="bsb-status">数据加载完成，共</li>		
+        	<li class="bsb-dataSize"></li>
+        	<li class="bsb-unit">条</li>
+        	<li class="bsb-placeholder">*</li>
+        	<li class="bsb-dataType">全量数据</li>
+        	<!--数据加载完成，共<span></span>条<b style="color: red;padding: 0 5px;">*</b><i style="color: red;">全量数据</i>-->
+        </ul>
+        <span id="currentDataVolumePrompt">
+        	符合当前条件数据 共0条
+        </span>
+        
+        <img id="goTop" src="/imgs/gotop.png"/>
+    </body>
+    <script type="text/javascript" charset="utf-8" src="/js/jquery.min.js"></script>
+    <script type="text/javascript" charset="utf-8" src="/js/jquery.cookie.js"></script>
+    <script type="text/javascript" charset="utf-8" src="/js/compatibility.js"></script>
+    <script type="text/javascript" charset="utf-8" src="/js/sh/shCore.js"></script>
+    <script type="text/javascript" charset="utf-8" src="/js/sh/shAutoloader.js"></script>
+    <script type="text/javascript" charset="utf-8" src="/js/sh/shBrushSql.js"></script>
+    <script type="text/javascript" charset="utf-8" src="/js/sh/jquery.zclip.min.js"></script>
+    <script type="text/javascript" charset="utf-8" src="/js/main.js" ></script>
+    <!--<script type="text/javascript" charset="utf-8" src="/js/index.js"></script>-->
+    <script type="text/javascript" charset="utf-8" src="/js/click.js"></script>
+    <script type="text/javascript" charset="utf-8" src="/js/copyTAB.js"></script>
+    <script type="text/javascript" charset="utf-8" src="/js/querySubmit.js"></script>
+    <script type="text/javascript" src="/css/aLi-icon/iconfont.js"></script>
+</html>

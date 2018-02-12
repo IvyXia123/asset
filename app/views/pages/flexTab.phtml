@@ -1,0 +1,252 @@
+<style type="text/css">
+	#flexTab-m-flex .random{
+		position: relative;
+		left: 70px;
+		width: 1420px;
+		height: 0px;
+		border-radius: 6px;
+		overflow: hidden;
+		opacity: 0;
+	}
+	#flexTab-m-flex .random *{
+		box-sizing: border-box;
+	}
+	#flexTab-m-flex .random .flexTab-u-nav{
+		height: 40px;
+		opacity: 0;
+		transition: all 1s;
+	}
+	#flexTab-m-flex .random .flexTab-u-tab >div{
+		width: calc(100% + 12px);
+	}
+	#flexTab-m-flex .random .flexTab-u-nav:hover{
+		height: 65px;
+		opacity: 1;
+	}
+	#flexTab-m-flex .random{
+	    border:3px solid #10ad9e;  
+	}
+	#flexTab-m-flex .random >div{
+		background-color: white;
+	}
+	#flexTab-m-flex .random .head-tab,#flexTab-m-flex .random .head-tab tr{
+		background-color:#10ad9e;
+	}
+	#flexTab-m-flex .random .body-tab td{
+	    color: #333 !important;
+	}
+	#flexTab-m-flex .random .body-tab tr:hover{
+		background-color:#62c5bc !important;
+	}
+	#flexTab-m-flex .random .body-tab tr:hover td:first-child{
+		color: yellow !important;
+	}
+	#flexTab-m-flex .random .body-tab tr:hover td{
+		color: white !important;
+	}
+	#flexTab-m-flex .random .pre-copy{
+		position: absolute;
+		left: 0;
+		top: 5px;
+	    opacity: 1;
+	}
+	#flexTab-m-flex .random .head-tab table{
+		top: 0;
+	}
+</style>
+<section id="flexTab-m-flex" class="m-flex"></section>
+<script type="text/javascript">
+	var underlyingTableSwicth = false;
+	var flexSellTime = {};
+	var flex = {
+		wrap : $('#flexTab-m-flex'),
+		main : '.flexTab-u-flex',
+		arr  : {
+    		'1':[ {'field':'loan_id','title':'序号'},
+    			{'field':'assets_no','title':'资产编号'},            //资产售卖进度外层大表字段
+				{'field':'borrower_subject','title':'资产名称'},
+				{'field':'project_name','title':'项目名称'},
+				{'field':'path_name','title':'路径名称'},
+				{'field':'total_amount','title':'资产规模'},
+				{'field':'assets_cost','title':'资产成本（%）'},
+				{'field':'month_period','title':'期限（月）'},
+				{'field':'inception_date','title':'成立日'},
+				{'field':'due_date','title':'到期日'},
+				{'field':'min_trans_date','title':'募集开始时间'},
+				{'field':'max_trans_date','title':'募集结束日'},
+				{'field':'fund_trans_amount','title':'已募集金额'},
+				{'field':'finish_percent','title':'募集进度（%）'},
+				{'field':'loan_amount','title':'已放款金额'},
+				{'field':'charge_balance','title':'剩余金额'}
+		    ],
+		    '1-1':[ {'field':'loan_id','title':'序号'},
+		    	{'field':'资产编号','title':'资产编号'},         //资产售卖进度内层小表字段
+				{'field':'资产名称','title':'资产名称'},
+				{'field':'项目名称','title':'项目名称'},
+				{'field':'底层产品名称','title':'底层产品名称'},
+				{'field':'底层产品规模','title':'底层产品规模'},
+				{'field':'产品成立日','title':'产品成立日'},
+				{'field':'产品期限','title':'产品期限（天）'},
+				{'field':'开始售卖时间','title':'开始售卖时间'},
+				{'field':'结束售卖时间','title':'结束售卖时间'},
+				{'field':'投资金额','title':'投资金额'}
+			],
+			'2':[ {'field':'loan_id','title':'序号'},
+				{'field':'assets_no','title':'资产编号'},
+				{'field':'assets_name','title':'资产名称'},
+				{'field':'','title':'项目名称'},
+				{'field':'issue_agency','title':'证券公司'},
+				{'field':'','title':'委贷行'},
+				{'field':'total_amount_2','title':'资产规模'},
+				{'field':'assets_cost','title':'资产成本'},
+				{'field':'month_category_2','title':'期限（月）'},
+				{'field':'max_inception_date','title':'成立日'},
+				{'field':'due_date','title':'到期时间'},
+				{'field':'min_trans_date','title':'募集开始时间'},
+				{'field':'max_trans_date','title':'募集结束时间'},
+				{'field':'outQuery_fund_amount','title':'查询期外募集金额'}, // 已募集 - 查询期内
+				{'field':'fund_amount','title':'查询期内募集金额'},    // 后台获取
+				{'field':'totalAmount','title':'总募集金额'},                //已募集金额
+				{'field':'finish_percent','title':'募集进度（%）'},
+				{'field':'loan_amount','title':'已放款金额'},
+				{'field':'surplus_amount','title':'剩余金额'}
+		    ],
+		    '2-1':[
+		    	{'field':'loan_id','title':'序号'},
+		    	{'field':'assets_no','title':'资产编号'},         //资产售卖进度内层小表字段
+				{'field':'assets_name','title':'资产名称'},
+				{'field':'project_name','title':'项目名称'},
+				{'field':'base_product_name','title':'底层产品名称'},
+				{'field':'base_product_scale','title':'底层产品规模'},
+				{'field':'inception_date','title':'产品成立日'},
+				{'field':'product_limit','title':'产品期限（天）'},
+				{'field':'max_trans_date','title':'开始售卖时间'},
+				{'field':'min_trans_date','title':'结束售卖时间'},
+				{'field':'amount','title':'投资金额'}
+		    ]
+    	}
+	};
+	flex.init = function(parames){
+		if(!p.details(parames).twoLevelTab){
+			flex.wrap.append(p.tabModule(1));
+			flex.wrap.find('.flexTab-u-nav').append(p.navModule.queryDemo);
+		};
+		p.currentPageDataChangeLogic(p.details(parames));
+	};
+	
+	// 加载项
+	flex.addChild = function(){
+		flex.wrap.click(function(event){
+			if($(event.target).parent().hasClass('bgStyle'))return;
+			if(!$(event.target).attr('class') ||$(event.target).attr('class').indexOf('flexTab-create') < 0 )return;
+			$('.random').parents('tr').remove();
+			random = new Date().getTime();// 随机数
+			// 创建新节点前盒子的长度;
+			var list = flex.wrap.children().length;
+            // 外层盒模型 .width()/2 / 外层盒模型 .length() == 节点创建前所有收缩起来盒子的 宽度;
+			var size = ( flex.wrap.width() * 0.3 ) / list;
+            var name = $(event.target).attr('class');
+            if($(event.target).hasClass('flexTab-create')){
+				flex.createChange(name,'create');
+			}else if($(event.target).hasClass('flexTab-create-sell')){
+				flex.createChange(name,'sell');
+			}
+		})
+	};
+	// add node & this.next().html();
+	flex.createChange = function(name,sta){
+		if(!$(event.target).parent().hasClass('bgStyle')){//当前对象不存在子表格；
+			// 删除页面上all(TR)的高亮状态，给当前对象父级添加高亮；
+			$(event.target).parents('table').find('.bgStyle').removeClass('bgStyle');
+			$(event.target).parent().addClass('bgStyle');
+			// 加载当前对象对应的子表格；
+			this.addNext(sta);
+		}else{// 当前对象已存在子表格
+			// 删除页面上all(TR)的高亮状态，给当前对象父级添加高亮；
+			$(event.target).parents('table').find('.bgStyle').removeClass('bgStyle');
+			underlyingTableSwicth = false;
+		}
+	}
+	// 二级表
+	flex.addNext = function(sta){
+		// 创建节点
+		$(event.target).parents('tr').after('<tr id="flex2" style="background-color: white !important;"><td colspan="12" style="position:relative;">'+p.tabModule(random)+'</td><td></td></tr>');
+		$('#'+random).animate({'height':'500px','opacity':'1'},500);
+		// 添加 table.text();
+		$('#'+random).css({'position':'relative'});
+		var urL;
+		if(sta == 'sell'){
+			this.init({
+				wrap	: $(event.target).parent().next().find('#'+random).parent(),
+				url 	: p.dataUrl.flexTab.SellingTimeTwoLevelTab+flexSellTime[0]+'&end_time='+flexSellTime[1]+'&assets_no='+$(event.target).html(),  //资产售卖进度内层小表url,
+				arr 	: flex.arr['2-1'],
+				twoLevelTab	: true,
+				"thousandSeparator":{
+					"two"	:['base_product_scale','amount']
+				},
+				"align"			: {		
+					"right":['base_product_scale','amount']
+				}
+			});
+		}else{
+			this.init({
+				wrap	: $(event.target).parent().next().find('#'+random).parent(),
+				url 	: p.dataUrl.flexTab.innerTable+$(event.target).html(),  //资产售卖进度内层小表url,
+				arr 	: flex.arr['1-1'],
+				twoLevelTab	: true,
+				"thousandSeparator":{
+					"two"	:['底层产品规模','投资金额']
+				},
+				"align"			: {		
+					"right":['底层产品规模','投资金额']
+				}
+			}); 
+		}
+		
+	};
+	flex.privateFormattingConditions = function(obj,k){ // obj : 当前循环到的整条数据， k: 当前显示表的 其中一个字段名
+		for(var i in p.database.initialData){
+			// 资产编号一致， 
+			if(p.database.initialData[i]['assets_no'] == obj['assets_no']){
+				// 获得查询期内已募集金额
+				if(k == 'totalAmount'){
+					return p.database.initialData[i]['fund_trans_amount']; // 与当前字段名 相对应的 初始表的字段名
+				};
+				// 查询期外募集金额 (已募集金额 - 期内募集金额)
+				if(k == 'outQuery_fund_amount'){
+					var amount = (p.database.initialData[i]['fund_trans_amount'] - obj['fund_amount']);
+					if(amount <= 0){
+						amount = 0;
+					}
+					return amount; 
+				}
+				
+			};
+			
+		}
+		
+	}
+	
+	$(document).ready(function(){
+		// 初始化
+		flex.init({
+			wrap: flex.wrap,
+			url : p.dataUrl.flexTab.outerTable,
+			arr : flex.arr['1'],
+			sellingProgress:true,
+			"keyword"  : ['%'],
+			"thousandSeparator":{
+				"two"	:['total_amount','assets_cost','fund_trans_amount','finish_percent','loan_amount','charge_balance']
+			},
+			"assets"		: {			
+				"arr"	:['assets_no'],
+				"className":'pointer flexTab-create'
+			},
+			"align"			: {		
+				"left" :['assets_no'],
+				"right":['total_amount','assets_cost','fund_trans_amount','finish_percent','loan_amount','charge_balance']
+			}
+		});
+		flex.addChild();
+	})
+</script>  
